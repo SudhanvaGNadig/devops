@@ -1,0 +1,148 @@
+
+
+Experiment 6: Continuous Integration with Jenkins: Setting Up a CI
+Pipeline, Integrating Jenkins with Maven/Gradle, Running Automated
+Builds and Tests
+1. Overview
+What is a CI Pipeline?
+A Continuous Integration (CI) Pipeline automates the process of building, testing, and
+integrating code changes every time code is committed to the repository. This pipeline:
+• Automatically checks out the latest code.
+• Compiles the application.
+• Runs tests to catch errors early.
+• Notifies the team of build/test results.
+Why Use Jenkins for CI?
+• Automation: Jenkins automates the build and test cycle, reducing manual intervention.
+• Immediate Feedback: Developers get rapid notifications of any integration issues.
+• Extensibility: With hundreds of plugins available, Jenkins can integrate with version
+control systems, build tools (Maven, Gradle), testing frameworks, and more.
+• Pipeline as Code: Using Jenkins Pipelines (defined in a Jenkinsfile), you can
+manage the CI process as part of your source code repository.
+2. Setting Up a CI Pipeline with Jenkins (Freestyle Project)
+This section explains how to create a CI pipeline as a Freestyle project that integrates with a
+Maven or Gradle project.
+
+first create repository using github 
+follow steps which shows in github after that follow below steps
+https://github.com/settings/tokens IF PASSWORD DOESNT WORKS GO FOR IT
+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
+
+HAVE  TO CREATE MAVEN PROJECT USING TERMINAL 
+
+1.git remote add origin https://github.com/heln123-maker/my-ci-pipeline.git
+2.git add .
+3.git commit -m "Initial commit: my-ci-pipeline"
+4.git push -u origin main
+
+steps:-Step 1: Create a New Jenkins Job
+1. Log into Jenkins:
+o Open your web browser and navigate to your Jenkins URL (e.g.,
+http://localhost:8080 or your cloud instance URL).
+o Log in with your admin credentials.
+
+
+2. Create a New Job:
+o On the Jenkins dashboard, click on “New Item”.
+o Enter an Item Name: For example, Maven-CI (or Gradle-CI if you prefer
+Gradle).
+o Select “Freestyle project”.
+o Click “OK”.
+
+
+Step 2: Configure Source Code Management (SCM)
+1. Select SCM:
+o In the job configuration page, scroll down to the “Source Code Management”
+section.
+o Select “Git” (if using Git for version control).
+2. Enter Repository Details:
+o Repository URL: Enter the URL of your Git repository (for example,
+https://github.com/yourusername/your-maven-project.git).
+o Credentials: If your repository is private, click “Add” to provide the necessary
+credentials.
+o Optionally, specify the Branch Specifier (e.g., */main).
+
+
+Step 3: Add Build Steps
+A. For a Maven Project
+1. Add Maven Build Step:
+o Scroll down to “Build” and click on “Add build step”.
+o Select “Invoke top-level Maven targets”.
+o Goals: In the Goals field, enter:
+o clean package
+
+B. For a Gradle Project
+1. Add Gradle Build Step:
+o If you are integrating a Gradle project, click on “Add build step” and choose
+“Invoke Gradle script” (this option might be available if you have installed a
+Gradle plugin in Jenkins).
+o Tasks: In the tasks field, enter:
+o clean build
+
+
+This instructs Gradle to clean previous build outputs and then build the project,
+running tests along the way.
+
+
+Step 4: Configure Post-build Actions
+1. Publish Test Results:
+o Scroll down to the “Post-build Actions” section.
+o Click “Add post-build action” and select “Publish JUnit test result report”.
+o Test Report XMLs: In the field, enter the pattern that matches your test report
+files. For example:
+o **/target/surefire-reports/*.xml
+for Maven, or a similar path for Gradle projects.
+
+
+Step 5: Save and Run the Job
+1. Save the Configuration:
+o Click “Save” at the bottom of the job configuration page.
+2. Trigger a Build:
+o On the job’s main page, click “Build Now”.
+o The build will be added to the build history on the left side.
+3. Monitor Build Output:
+o Click on the build number (e.g., #1) and then click “Console Output”
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+            }
+        }
+    }
+}
